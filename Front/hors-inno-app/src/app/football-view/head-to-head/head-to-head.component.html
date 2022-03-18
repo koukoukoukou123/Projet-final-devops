@@ -1,0 +1,212 @@
+<div class="place">
+        <form #myform="ngForm" (ngSubmit)="onFormSubmit(myform)" class="form form-register">
+                <label>Equipe 1</label>
+                <select ngModel name="equipe1" id="equipe1" class="form-control">
+                        <option *ngFor="let team of teams" [value]="team.teamName"> {{team.teamName}} </option>
+                </select>
+                <label>Equipe 2</label>
+                <select ngModel name="equipe2" id="equipe2" class="form-control">
+                        <option *ngFor="let team of teams" [value]="team.teamName"> {{team.teamName}} </option>
+                </select> <br> <br>
+                <button type="submit" class="btn btn-success">Chercher</button>
+                <button type="button" class="btn btn-danger" (click)="resthThform(myform)">Reset</button>
+        </form>
+        <div *ngIf="this.affichageChoix">Vérifier votre choix SVP</div>
+        <div *ngIf="this.affichageTableau">
+                <div *ngIf="headtoheadres == null"> Probléme de connexion merci de réeysser plus tard </div>
+                <div *ngIf="headtoheadres != null">
+                        <div *ngIf="((this.fVsH | json) == '[]')  && ((this.fVs | json) == '[]') && ((this.hVs | json) == '[]')">
+                                <h4> pas de resultat pour votre choix</h4>
+                        </div>
+                        <div *ngIf="((this.fVsH | json) != '[]')  && ((this.fVs | json) != '[]') && ((this.hVs | json) != '[]')">
+
+                                <div class="row">
+                                        <div class="col-md-4 col-sm-12"></div>
+                                        <div class="col-md-5 col-sm-12">
+                                                <h4>{{headtohead.equipe1}} VS {{headtohead.equipe2}}</h4>
+                                                <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                                <tr>
+                                                                        <th scope="col">home team</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">away Team</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody *ngFor="let fVsH of fVsH">
+                                                                <tr>
+                                                                        <th scope="row">{{fVsH.match_hometeam_name}}
+                                                                        </th>
+                                                                        <td>{{fVsH.match_hometeam_score}}</td>
+                                                                        <td>{{fVsH.match_awayteam_score}}</td>
+                                                                        <td>{{fVsH.match_awayteam_name}}</td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                                </div>
+
+                                <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+
+                                                <h4>{{headtohead.equipe1}} Last match</h4>
+                                                <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                                <tr>
+                                                                        <th scope="col">home team</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">away Team</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody *ngFor="let fVs of fVs">
+                                                                <tr>
+                                                                        <td [ngClass]="{'vert': (fVs.match_hometeam_name| uppercase) == (headtohead.equipe1| uppercase)}">{{fVs.match_hometeam_name}}</td>
+                                                                        <td>{{fVs.match_hometeam_score}}</td>
+                                                                        <td>{{fVs.match_awayteam_score}}</td>
+                                                                        <td [ngClass]="{'vert': (fVs.match_awayteam_name| uppercase) == (headtohead.equipe1| uppercase)}">{{fVs.match_awayteam_name}}</td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-4 col-sm-12">
+
+                                                <h4>{{headtohead.equipe2}} Last match</h4>
+                                                <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                                <tr>
+                                                                        <th scope="col">home team</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">away Team</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody *ngFor="let hVs of hVs">
+                                                                <tr>
+                                                                        <td [ngClass]="{'vert': (hVs.match_hometeam_name| uppercase) == (headtohead.equipe2| uppercase)}">
+                                                                                {{hVs.match_hometeam_name}}</td>
+                                                                        <td>{{hVs.match_hometeam_score}}</td>
+                                                                        <td>{{hVs.match_awayteam_score}}</td>
+                                                                        <td
+                                                                        [ngClass]="{'vert': (hVs.match_awayteam_name| uppercase) == (headtohead.equipe2| uppercase)}">
+                                                                                {{hVs.match_awayteam_name}}</td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                                </div>
+                        </div>
+                        <div *ngIf="((this.fVsH | json) == '[]')  && ((this.fVs | json) != '[]') && ((this.hVs | json) != '[]')">
+                                <h4> pas de match entre les deux equipes mais au dessous les derniers résultat de chaque
+                                        équipe
+                                </h4>
+                                <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+                                                <h4>{{headtohead.equipe1}} Last match</h4>
+                                                <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                                <tr>
+                                                                        <th scope="col">home team</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">away Team</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody *ngFor="let fVs of fVs">
+                                                                <tr>
+                                                                        <td [ngClass]="{'vert': (fVs.match_hometeam_name| uppercase) == (headtohead.equipe1 | uppercase)}">{{fVs.match_hometeam_name}}</td>
+                                                                        <td>{{fVs.match_hometeam_score}}</td>
+                                                                        <td>{{fVs.match_awayteam_score}}</td>
+                                                                        <td [ngClass]="{'vert': (fVs.match_awayteam_name| uppercase) == (headtohead.equipe1| uppercase)}">{{fVs.match_awayteam_name}}</td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+
+                                        <div class="col-md-2"></div>
+                                        <div class="col-md-4 col-sm-12">
+
+                                                <h4>{{headtohead.equipe2}} Last match</h4>
+                                                <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                                <tr>
+                                                                        <th scope="col">home team</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">Goal</th>
+                                                                        <th scope="col">away Team</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody *ngFor="let hVs of hVs">
+                                                                <tr>
+                                                                        <td [ngClass]="{'vert': (hVs.match_hometeam_name| uppercase) == (headtohead.equipe2| uppercase)}">{{hVs.match_hometeam_name}}</td>
+                                                                        <td>{{hVs.match_hometeam_score}}</td>
+                                                                        <td>{{hVs.match_awayteam_score}}</td>
+                                                                        <td [ngClass]="{'vert': (hVs.match_awayteam_name| uppercase) == (headtohead.equipe2| uppercase)}">{{hVs.match_awayteam_name}}</td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                                </div>
+                        </div>
+                        <div
+                                *ngIf="((this.fVsH | json) == '[]')  && ((this.fVs | json) == '[]') && ((this.hVs | json) != '[]')">
+                                <h3> pas d'info pour l'equipe {{headtohead.equipe1}} mais au dessous les
+                                        derniers
+                                        résultat de
+                                        {{headtohead.equipe2}}
+                                </h3>
+                                <h4>{{headtohead.equipe2}} Last match</h4>
+                                <table class="table table-bordered">
+                                        <thead class="thead-light">
+                                                <tr>
+                                                        <th scope="col">home team</th>
+                                                        <th scope="col">Goal</th>
+                                                        <th scope="col">Goal</th>
+                                                        <th scope="col">away Team</th>
+                                                </tr>
+                                        </thead>
+                                        <tbody *ngFor="let hVs of hVs">
+                                                <tr>
+                                                        <td [ngClass]="{'vert': (hVs.match_hometeam_name| uppercase) == (headtohead.equipe2| uppercase)}">
+                                                                {{hVs.match_hometeam_name}}</td>
+                                                        <td>{{hVs.match_hometeam_score}}</td>
+                                                        <td>{{hVs.match_awayteam_score}}</td>
+                                                        <td [ngClass]="{'vert': (hVs.match_awayteam_name| uppercase) == (headtohead.equipe2| uppercase)}">
+                                                                {{hVs.match_awayteam_name}}</td>
+                                                </tr>
+                                        </tbody>
+                                </table>
+
+                        </div>
+                        <div *ngIf="((this.fVsH | json) == '[]')  && ((this.fVs | json) != '[]') && ((this.hVs | json) == '[]')">
+                                <h3> pas d'info pour l'equipe {{headtohead.equipe2}} mais au dessous les
+                                        derniers
+                                        résultat de
+                                        {{headtohead.equipe1}}
+                                </h3>
+                                <h4>{{headtohead.equipe1}} Last match</h4>
+                                <table class="table table-bordered">
+                                        <thead class="thead-light">
+                                                <tr>
+                                                        <th scope="col">home team</th>
+                                                        <th scope="col">Goal</th>
+                                                        <th scope="col">Goal</th>
+                                                        <th scope="col">away Team</th>
+                                                </tr>
+                                        </thead>
+                                        <tbody *ngFor="let fVs of fVs">
+                                                <tr>
+                                                        <td  [ngClass]="{'vert': (fVs.match_hometeam_name| uppercase) == (headtohead.equipe1| uppercase)}">{{fVs.match_hometeam_name}}</td>
+                                                        <td>{{fVs.match_hometeam_score}}</td>
+                                                        <td>{{fVs.match_awayteam_score}}</td>
+                                                        <td  [ngClass]="{'vert': (fVs.match_awayteam_name| uppercase) == (headtohead.equipe1| uppercase)}">{{fVs.match_awayteam_name}}</td>
+                                                </tr>
+                                        </tbody>
+                                </table>
+                        </div>
+                </div>
+        </div>
+
+</div>

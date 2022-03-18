@@ -1,0 +1,42 @@
+<h1 class = "title">La Ligua Classement </h1>
+<table class="table table-bordered">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Rang</th>
+      <th scope="col">Team</th>
+      <th scope="col">Points</th>
+      <th scope="col">Match gagnée</th>
+      <th scope="col">Match à egalité</th>
+      <th scope="col">Match perdu</th>
+    </tr>
+  </thead>
+  <tbody *ngFor="let equipe of equipes| orderBy: 'points' : true; let i = index" >
+    <tr >
+      <th scope="row">{{i+1}}</th>
+      <td>{{equipe.team.teamName}}</td>
+      <td>{{equipe.points}}</td>
+      <td>{{equipe.win}}</td>
+      <td>{{equipe.draw}}</td>
+      <td>{{equipe.lose}}</td>
+    </tr>
+  </tbody>
+</table>
+<h1 class = "title">Mettre à jour les infos d'une équipe </h1>
+<div class = "title">
+<form #equipe="ngForm" (ngSubmit)="onFormSubmit(equipe)" class="form form-register"> 
+  <label>team</label>
+  <input ngModel type= "text" name="team" id="team" class="form-control" >
+  <!-- <select ngModel name="team" id="team" class="form-control">
+    <option *ngFor="let equipe of equipes" [value]="equipe.team.teamName"> {{equipe.team.teamName}} </option>
+</select> -->
+  <label>nombre de match gagner</label>
+  <input ngModel type= "number" name="win" id="win" min="0" class="form-control" >
+  <label>nombre de match null</label>
+  <input ngModel type= "number" name="draw" id="draw" min="0" class="form-control" >
+  <label>nombre de match perdu</label>
+  <input ngModel type= "number" name="lose" id="lose" min="0"  class="form-control" >
+
+  <button class="btn btn-success">ajouter</button>
+  <button type="button" class="btn btn-danger" (click)="resthThform(equipe)">Reset</button>
+</form>
+</div>
